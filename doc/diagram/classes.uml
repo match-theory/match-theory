@@ -1,0 +1,77 @@
+@startuml
+
+package src {
+    class main {
+        window: Window
+        stateManager: StateManager
+    }
+
+    class Window {
+        Window(title: string, width: int, height: int)
+        renderer: SDL_renderer*
+        present(): void
+        clear(): void
+    }
+    class Board {
+        gems: Gem[][]
+        Board(x: int, y: int, width: int, height:int)
+        update(): void
+        draw(): void
+    }
+    class Gem {
+        Gem(x: int, y: int, type: int)
+        update(): void
+        draw(): void
+
+        setPosition(x: int, y: int): void
+    }
+    class StateManager {
+        currentState: BaseState
+        update()
+        draw()
+        getInput()
+    }
+    package states {
+        class BaseState{
+            canPause: bool
+        }
+        class GameState{
+            running: bool
+            board: Board
+            update(): void
+            draw(): void
+
+            setSelection(x: int, y: int): void
+            moveGem()
+            getMatches()
+            removeGem()
+            addScore()
+            fillBoard()
+        }
+        class MenuState{
+            update(): void
+            draw(): void
+        }
+        class PauseState{
+            update(): void
+            draw(): void
+        }
+        package game{
+            class EndlessState{}
+        }
+    }
+}
+
+main *-- StateManager
+main *-- Window
+StateManager *-- BaseState
+
+GameState *-- Board
+Board *-- Gem
+
+BaseState <|-- GameState
+BaseState <|-- MenuState
+BaseState <|-- PauseState
+GameState <|-- EndlessState
+
+@enduml
